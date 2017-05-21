@@ -2,3 +2,5 @@
 /out/
 
 *.iml
+
+/sample_tests/in.txt

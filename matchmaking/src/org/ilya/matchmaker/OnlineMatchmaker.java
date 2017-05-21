@@ -44,11 +44,11 @@ public class OnlineMatchmaker {
     }
 
     private Match findMatch() {
-        int[] sortedRanks = prioritizePlayerBuckets(Player.MIN_RANK, Player.MAX_RANK);
+        int[] prioritizedBuckets = prioritizePlayerBuckets(Player.MIN_RANK, Player.MAX_RANK);
 
         Match match = new Match();
         boolean fail[] = new boolean[Player.MAX_RANK+1];
-        for (int rank : sortedRanks) {
+        for (int rank : prioritizedBuckets) {
             if (playerBucketsByRank[rank].size() > 0 && backtrack(rank, match, fail)) {
                 return match;
             } else {
@@ -95,10 +95,10 @@ public class OnlineMatchmaker {
         }
 
         RankRange rankRange = match.getLastAddedPlayer().getAllowedRanksRange(currentTime, TIMESPAN);
-        int[] sortedRanks = prioritizePlayerBuckets(rankRange.getMinRank(), rankRange.getMaxRank());
-        for (int nextRank : sortedRanks) {
-            if (!fail[nextRank] && playerBucketsByRank[nextRank].size() > 0 && playerCanJoinMatch(playerBucketsByRank[nextRank].peek(), match)) {
-                if (backtrack(nextRank, match, fail)) {
+        int[] prioritizedBuckets = prioritizePlayerBuckets(rankRange.getMinRank(), rankRange.getMaxRank());
+        for (int nextRankBucket : prioritizedBuckets) {
+            if (!fail[nextRankBucket] && playerBucketsByRank[nextRankBucket].size() > 0 && playerCanJoinMatch(playerBucketsByRank[nextRankBucket].peek(), match)) {
+                if (backtrack(nextRankBucket, match, fail)) {
                     return true;
                 }
             }
