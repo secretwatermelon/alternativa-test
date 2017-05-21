@@ -97,7 +97,7 @@ public class OnlineMatchmaker {
         RankRange rankRange = match.getLastAddedPlayer().getAllowedRanksRange(currentTime, TIMESPAN);
         int[] prioritizedBuckets = prioritizePlayerBuckets(rankRange.getMinRank(), rankRange.getMaxRank());
         for (int nextRankBucket : prioritizedBuckets) {
-            if (!fail[nextRankBucket] && playerBucketsByRank[nextRankBucket].size() > 0 && playerCanJoinMatch(playerBucketsByRank[nextRankBucket].peek(), match)) {
+            if (!fail[nextRankBucket] && playerBucketsByRank[nextRankBucket].size() > 0 && match.playerCanJoin(playerBucketsByRank[nextRankBucket].peek(), currentTime, TIMESPAN)) {
                 if (backtrack(nextRankBucket, match, fail)) {
                     return true;
                 }
@@ -107,19 +107,6 @@ public class OnlineMatchmaker {
         playerBucketsByRank[rank].addFirst(match.getLastAddedPlayer());
         match.removeLastAddedPlayer();
         return false;
-    }
-
-    private boolean playerCanJoinMatch(Player player, Match match) {
-        RankRange playerRankRange = player.getAllowedRanksRange(currentTime, TIMESPAN);
-
-        for (Player matchPlayer : match.getPlayers()) {
-            RankRange matchPlayerRankRange = matchPlayer.getAllowedRanksRange(currentTime, TIMESPAN);
-            if (!(playerRankRange.inRange(matchPlayer.getRank()) && matchPlayerRankRange.inRange(player.getRank()))) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public ArrayList<Match> getMatches() {

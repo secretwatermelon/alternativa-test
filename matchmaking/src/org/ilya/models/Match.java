@@ -50,6 +50,19 @@ public class Match {
         return getMaxPlayerEntryTime() - getMinPlayerEntryTime();
     }
 
+    public boolean playerCanJoin(Player player, long currentTime, long timespan) {
+        RankRange playerRankRange = player.getAllowedRanksRange(currentTime, timespan);
+
+        for (Player matchPlayer : getPlayers()) {
+            RankRange matchPlayerRankRange = matchPlayer.getAllowedRanksRange(currentTime, timespan);
+            if (!(playerRankRange.inRange(matchPlayer.getRank()) && matchPlayerRankRange.inRange(player.getRank()))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
